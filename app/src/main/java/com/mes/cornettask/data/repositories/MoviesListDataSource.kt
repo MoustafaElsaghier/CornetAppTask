@@ -19,13 +19,14 @@ class MoviesListDataSource
 
     private val _networkState = MutableLiveData<NetworkState>()
     val networkState: LiveData<NetworkState>
-        get() = _networkState                   //with this get, no need to implement get function to get networkSate
+        //with this get, no need to implement get function to get networkSate
+        get() = _networkState
 
     private val _moviesListResponse = MutableLiveData<DiscoverMoviesResponse>()
     val moviesListResponse: LiveData<DiscoverMoviesResponse>
         get() = _moviesListResponse
 
-    fun fetchMovieDetails(movieId: Int) {
+    fun fetchMovieList() {
         _networkState.postValue(NetworkState.LOADING)
         try {
             compositeDisposable.add(
