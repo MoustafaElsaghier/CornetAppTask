@@ -9,6 +9,8 @@ import java.util.concurrent.TimeUnit
 
 const val API_KEY = "6e63c2317fbe963d76c3bdc2b785f6d1"
 const val BASE_URL = "https://api.themoviedb.org/3/"
+const val token =
+    "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiYTNkOTkzZTNmOGJhOGIzNDJmNTAyZjllZDY5ZTUzMiIsInN1YiI6IjVmMTQzMTViMWM2YWE3MDAzNTgxN2U2ZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.1R5tfdhb_LC_MqR1SrTDTtJKvWZsSQGC72WFlF4oiOU"
 
 const val POSTER_BASE_URL = "https://image.tmdb.org/t/p/w342"
 
@@ -26,6 +28,8 @@ object ApiClient {
 
             val request = chain.request()
                 .newBuilder()
+                .addHeader("Authorization", "Bearer $token")
+                .addHeader("Content-Type", "application/json;charset=utf-8")
                 .url(url)
                 .build()
 

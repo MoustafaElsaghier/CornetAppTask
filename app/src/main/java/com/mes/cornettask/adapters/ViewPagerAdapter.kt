@@ -3,8 +3,8 @@ package com.mes.cornettask.adapters
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
-import com.mes.cornettask.ui.DiscoverScreen.DiscoverFragment
-import com.mes.cornettask.ui.SearchScreen.SearchFragment
+import com.mes.cornettask.ui.discoverScreen.DiscoverFragment
+import com.mes.cornettask.ui.searchScreen.SearchFragment
 
 class ViewPagerAdapter(supportFragmentManager: FragmentManager) :
     FragmentStatePagerAdapter(supportFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {

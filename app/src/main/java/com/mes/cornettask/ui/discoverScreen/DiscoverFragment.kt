@@ -1,4 +1,4 @@
-package com.mes.cornettask.ui.SearchScreen
+package com.mes.cornettask.ui.discoverScreen
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,13 +7,14 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.mes.cornettask.R
 
-class SearchFragment : Fragment() {
+class DiscoverFragment : Fragment() {
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_search, container, false)
+        return inflater.inflate(R.layout.fragment_discover, container, false)
     }
 
 }
