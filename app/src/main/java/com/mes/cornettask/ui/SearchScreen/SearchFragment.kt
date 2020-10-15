@@ -1,4 +1,4 @@
-package com.mes.cornettask.fragments
+package com.mes.cornettask.ui.SearchScreen
 
 import android.os.Bundle
 import android.view.LayoutInflater

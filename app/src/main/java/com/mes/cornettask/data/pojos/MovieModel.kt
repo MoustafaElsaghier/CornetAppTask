@@ -1,4 +1,4 @@
-package com.mes.cornettask.models
+package com.mes.cornettask.data.pojos
 
 
 import com.google.gson.annotations.SerializedName

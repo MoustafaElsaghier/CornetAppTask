@@ -1,4 +1,4 @@
-package com.mes.cornettask.api
+package com.mes.cornettask.data.api
 
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
