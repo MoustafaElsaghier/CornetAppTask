@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">CornetTask</string>
+    <string name="no_movies_found">No Movies Found</string>
+
 </resources>
