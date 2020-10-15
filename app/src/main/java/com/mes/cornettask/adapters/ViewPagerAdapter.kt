@@ -14,10 +14,10 @@ class ViewPagerAdapter(supportFragmentManager: FragmentManager) :
     override fun getItem(position: Int): Fragment {
         return when (position) {
             0 -> {
-                DiscoverFragment()
+                discoverFragment
             }
             1 -> {
-                SearchFragment()
+                searchFragment
             }
 
             else -> getItem(position)
