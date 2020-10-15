@@ -1,8 +1,13 @@
 package com.mes.cornettask.api
 
-interface MovieInterface {
-//    search/movie
+import com.mes.cornettask.models.DiscoverMoviesResponse
+import retrofit2.http.GET
+import retrofit2.http.QueryMap
 
-//    discover/movie
+interface MovieInterface {
+    @GET("discover/movie")
+    fun getDiscoverMovieAsync(@QueryMap hashMap: HashMap<String, String> = HashMap()): DiscoverMoviesResponse
+
+    //    search/movie
 
 }
