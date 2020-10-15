@@ -20,7 +20,7 @@ class MoviesListRepo(private val apiService: MovieInterface) {
         return moviesListDataSource.moviesListResponse
     }
 
-    fun getMoviesNetworkState(): LiveData<NetworkState> {
+    fun getNetworkState(): LiveData<NetworkState> {
         return moviesListDataSource.networkState
     }
 }
