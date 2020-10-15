@@ -2,5 +2,7 @@
     <string name="app_name">CornetTask</string>
     <string name="no_movies_found">No Movies Found</string>
     <string name="connection_problem">Connection Problem!!</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
