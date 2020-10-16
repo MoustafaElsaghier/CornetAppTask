@@ -13,7 +13,7 @@ class SearchFragmentViewModel(
 ) :
     ViewModel() {
     private val compositeDisposable = CompositeDisposable()
-    private val moviesPagedList: LiveData<PagedList<MovieModel>> by lazy {
+    val moviesPagedList: LiveData<PagedList<MovieModel>> by lazy {
         moviesRepository.fetchLiveMoviePagedList(compositeDisposable, searchKey)
     }
 
