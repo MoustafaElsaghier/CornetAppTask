@@ -11,7 +11,7 @@ import io.reactivex.schedulers.Schedulers
 /**
  * this class for getting list of movies from internet
  * */
-class MoviesListDataSource
+class DiscoverMoviesListDataSource
     (
     private val apiService: MovieInterface,
     private val compositeDisposable: CompositeDisposable
