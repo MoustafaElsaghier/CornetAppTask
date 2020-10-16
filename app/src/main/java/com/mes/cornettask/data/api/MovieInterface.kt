@@ -10,6 +10,9 @@ interface MovieInterface {
     fun getDiscoverMovieAsync(): Single<MoviesResponse>
 
     @GET("search/movie")
-    fun getSearchMovieAsync(@Query("query") searchKey: String): Single<MoviesResponse>
+    fun getSearchMovieAsync(
+        @Query("query") searchKey: String,
+        @Query("page") page: Int
+    ): Single<MoviesResponse>
 
 }

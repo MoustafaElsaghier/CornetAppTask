@@ -15,10 +15,11 @@ class SearchMoviesListRepo(private val apiService: MovieInterface) {
 
     fun fetchSearchMovie(
         compositeDisposable: CompositeDisposable,
-        searchKey: String
+        searchKey: String,
+        page: Int
     ): LiveData<MoviesResponse> {
         searchMoviesListDataSource = SearchMoviesListDataSource(apiService, compositeDisposable)
-        searchMoviesListDataSource.fetchMovieList(searchKey)
+        searchMoviesListDataSource.fetchMovieList(searchKey, page)
 
         return searchMoviesListDataSource.moviesListResponse
     }

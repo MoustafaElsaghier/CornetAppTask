@@ -13,6 +13,9 @@ const val token =
     "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiYTNkOTkzZTNmOGJhOGIzNDJmNTAyZjllZDY5ZTUzMiIsInN1YiI6IjVmMTQzMTViMWM2YWE3MDAzNTgxN2U2ZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.1R5tfdhb_LC_MqR1SrTDTtJKvWZsSQGC72WFlF4oiOU"
 
 const val POSTER_BASE_URL = "https://image.tmdb.org/t/p/w342"
+const val FIRST_PAGE = 1
+const val ITEMS_PER_PAGE = 15
+
 
 object ApiClient {
     fun getClient(): MovieInterface {

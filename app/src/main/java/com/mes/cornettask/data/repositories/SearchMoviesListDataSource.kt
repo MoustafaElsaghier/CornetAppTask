@@ -20,11 +20,11 @@ class SearchMoviesListDataSource(
     val moviesListResponse: LiveData<MoviesResponse>
         get() = _moviesListResponse
 
-    fun fetchMovieList(searchKey: String) {
+    fun fetchMovieList(searchKey: String, page: Int) {
         networkState.postValue(NetworkState.LOADING)
         try {
             compositeDisposable.add(
-                apiService.getSearchMovieAsync(searchKey)
+                apiService.getSearchMovieAsync(searchKey, page)
                     .subscribeOn(Schedulers.io())
                     .subscribe(
                         {
