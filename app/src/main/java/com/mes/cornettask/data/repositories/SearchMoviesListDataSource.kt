@@ -9,7 +9,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
 /**
- * this class for getting search result of movies from internet
+ * this class for getting list of movies from internet
  * */
 class SearchMoviesListDataSource(
     private val apiService: MovieInterface,
