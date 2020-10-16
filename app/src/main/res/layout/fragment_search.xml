@@ -78,4 +78,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/wordsRecycler"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:background="#00BCD4"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/movieNameEt"
+        app:layout_constraintStart_toStartOf="@+id/movieNameEt"
+        app:layout_constraintTop_toBottomOf="@+id/movieNameEt"
+        app:layout_constraintVertical_bias="0.0"
+        tools:listitem="@layout/word_item" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,4 +5,5 @@
     <string name="search">Search</string>
     <string name="discover">Discover</string>
     <string name="movie_name">Movie Name</string>
+    <string name="movie_empty">Please enter movie name</string>
 </resources>
