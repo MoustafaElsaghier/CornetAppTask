@@ -8,13 +8,17 @@ import com.mes.cornettask.data.repositories.NetworkState
 import io.reactivex.disposables.CompositeDisposable
 
 class SearchFragmentViewModel(
-    private val moviesRepository: MoviesPageListRepository,
-    private val searchKey: String
-) :
-    ViewModel() {
-    private val compositeDisposable = CompositeDisposable()
+    val moviesRepository: MoviesPageListRepository
+) : ViewModel() {
+
+    var searchText: String = ""
+        set(value) {
+            field = value
+            moviesRepository.fetchLiveMoviePagedList(compositeDisposable, searchText)
+        }
+    val compositeDisposable = CompositeDisposable()
     val moviesPagedList: LiveData<PagedList<MovieModel>> by lazy {
-        moviesRepository.fetchLiveMoviePagedList(compositeDisposable, searchKey)
+        moviesRepository.fetchLiveMoviePagedList(compositeDisposable, searchText)
     }
 
     val networkState: LiveData<NetworkState> by lazy {
@@ -25,11 +29,9 @@ class SearchFragmentViewModel(
         return moviesPagedList.value?.isEmpty() ?: true
     }
 
-
     override fun onCleared() {
         super.onCleared()
         compositeDisposable.dispose()
     }
-
 
 }

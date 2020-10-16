@@ -6,6 +6,7 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface MovieInterface {
+
     @GET("discover/movie")
     fun getDiscoverMovieAsync(): Single<MoviesResponse>
 
