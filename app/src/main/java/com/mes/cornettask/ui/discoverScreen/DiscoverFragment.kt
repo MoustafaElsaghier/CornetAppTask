@@ -39,20 +39,46 @@ class DiscoverFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val apiService = ApiClient.getClient()
-        moviesListRepository = MoviesListRepo(apiService)
+        initScreenMovies()
+    }
 
-        viewModel = getViewModel()
-        viewModel.moviesList.observe(viewLifecycleOwner, {
-            updateMoviesList(it)
-        })
+    private fun initScreenMovies() {
+        initViewModel()
+        setObserverMoviesList()
+        setObserverNetworkState()
+    }
 
+    /**
+     * register observer for network state
+     * */
+    private fun setObserverNetworkState() {
         viewModel.networkState.observe(viewLifecycleOwner, {
             progressBar.visibility = if (it == NetworkState.LOADING) View.VISIBLE else View.GONE
             txtError.visibility = if (it == NetworkState.ERROR) View.VISIBLE else View.GONE
         })
     }
 
+    /**
+     * register observer for movies list
+     * */
+    private fun setObserverMoviesList() {
+        viewModel.moviesList.observe(viewLifecycleOwner, {
+            updateMoviesList(it)
+        })
+    }
+
+    /**
+     * init repo & viewModel
+     * */
+    private fun initViewModel() {
+        val apiService = ApiClient.getClient()
+        moviesListRepository = MoviesListRepo(apiService)
+        viewModel = getViewModel()
+    }
+
+    /**
+     * init movies viewModel
+     * */
     private fun getViewModel(): MoviesListViewModel {
         return ViewModelProvider(this, object : ViewModelProvider.Factory {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {

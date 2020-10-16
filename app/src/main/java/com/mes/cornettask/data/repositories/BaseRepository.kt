@@ -8,5 +8,4 @@ open class BaseRepository {
     val network: LiveData<NetworkState>
         //with this get, no need to implement get function to get networkSate
         get() = networkState
-
 }
