@@ -11,7 +11,7 @@ import io.reactivex.schedulers.Schedulers
 /**
  * this class for getting list of movies from internet
  * */
-class MoviesListDataSource
+class SearchMoviesListDataSource
     (
     private val apiService: MovieInterface,
     private val compositeDisposable: CompositeDisposable
@@ -26,11 +26,11 @@ class MoviesListDataSource
     val moviesListResponse: LiveData<MoviesResponse>
         get() = _moviesListResponse
 
-    fun fetchMovieList() {
+    fun fetchMovieList(searchKey: String) {
         _networkState.postValue(NetworkState.LOADING)
         try {
             compositeDisposable.add(
-                apiService.getDiscoverMovieAsync()
+                apiService.getSearchMovieAsync(searchKey)
                     .subscribeOn(Schedulers.io())
                     .subscribe(
                         {
@@ -39,7 +39,7 @@ class MoviesListDataSource
                         },
                         {
                             _networkState.postValue(NetworkState.ERROR)
-                            it.message?.let { it1 -> Log.e("MovieDetailsDataSource", it1) }
+                            it.message?.let { it1 -> Log.e("SearchDataSource", it1) }
                         }
                     )
             )

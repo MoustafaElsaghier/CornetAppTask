@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.mes.cornettask.R
 import com.mes.cornettask.adapters.DiscoverMoverAdapter
 import com.mes.cornettask.data.api.ApiClient
-import com.mes.cornettask.data.pojos.DiscoverMoviesResponse
+import com.mes.cornettask.data.pojos.MoviesResponse
 import com.mes.cornettask.data.repositories.NetworkState
 import kotlinx.android.synthetic.main.fragment_discover.*
 
@@ -28,7 +28,7 @@ class DiscoverFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_discover, container, false)
     }
 
-    private fun updateMoviesList(it: DiscoverMoviesResponse?) {
+    private fun updateMoviesList(it: MoviesResponse?) {
         if (it != null) {
             moviesAdapter = context?.let { it1 -> DiscoverMoverAdapter(it1, it.results) }!!
             discoverMoviesRv.layoutManager =

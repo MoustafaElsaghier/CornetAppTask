@@ -2,7 +2,7 @@ package com.mes.cornettask.ui.discoverScreen
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import com.mes.cornettask.data.pojos.DiscoverMoviesResponse
+import com.mes.cornettask.data.pojos.MoviesResponse
 import com.mes.cornettask.data.repositories.NetworkState
 import io.reactivex.disposables.CompositeDisposable
 
@@ -12,7 +12,7 @@ class MoviesListViewModel(private val moviesRepository: MoviesListRepo) : ViewMo
     /**
      * lazy to get it when needed not when initalized, better for performance.
      * */
-    val moviesList: LiveData<DiscoverMoviesResponse> by lazy {
+    val moviesList: LiveData<MoviesResponse> by lazy {
         moviesRepository.fetchDiscoverMovie(compositeDisposable)
     }
 
