@@ -42,10 +42,6 @@ class SearchFragment : Fragment() {
             searchKey = movieNameEt.text.toString()
             if (searchKey.isNotEmpty()) {
                 viewModel.searchText = searchKey
-                viewModel.moviesRepository.fetchLiveMoviePagedList(
-                    viewModel.compositeDisposable,
-                    searchKey
-                )
             }
         }
 
