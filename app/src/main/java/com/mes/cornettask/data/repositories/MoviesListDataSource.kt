@@ -15,19 +15,14 @@ class MoviesListDataSource
     (
     private val apiService: MovieInterface,
     private val compositeDisposable: CompositeDisposable
-) {
-
-    private val _networkState = MutableLiveData<NetworkState>()
-    val networkState: LiveData<NetworkState>
-        //with this get, no need to implement get function to get networkSate
-        get() = _networkState
+) : BaseRepository() {
 
     private val _moviesListResponse = MutableLiveData<MoviesResponse>()
     val moviesListResponse: LiveData<MoviesResponse>
         get() = _moviesListResponse
 
     fun fetchMovieList() {
-        _networkState.postValue(NetworkState.LOADING)
+        networkState.postValue(NetworkState.LOADING)
         try {
             compositeDisposable.add(
                 apiService.getDiscoverMovieAsync()
@@ -35,10 +30,10 @@ class MoviesListDataSource
                     .subscribe(
                         {
                             _moviesListResponse.postValue(it)
-                            _networkState.postValue(NetworkState.LOADED)
+                            networkState.postValue(NetworkState.LOADED)
                         },
                         {
-                            _networkState.postValue(NetworkState.ERROR)
+                            networkState.postValue(NetworkState.ERROR)
                             it.message?.let { it1 -> Log.e("MovieDetailsDataSource", it1) }
                         }
                     )
