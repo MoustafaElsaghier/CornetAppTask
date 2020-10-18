@@ -9,9 +9,12 @@ import androidx.room.Query
 @Dao
 interface WordDao {
     @Query("SELECT * from word_table")
-    fun getSearchWords(): LiveData<List<Word>>
+    fun getViewModelSearchWords(): LiveData<List<Word>>
+
+    @Query("SELECT * from word_table")
+    fun getSearchWords(): List<Word>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insert(word: Word)
+    fun insert(word: Word)
 
 }

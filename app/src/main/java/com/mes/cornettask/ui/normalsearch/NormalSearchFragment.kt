@@ -18,13 +18,18 @@ import com.mes.cornettask.data.api.ApiClient
 import com.mes.cornettask.data.api.MovieInterface
 import com.mes.cornettask.data.pojos.MovieModel
 import com.mes.cornettask.data.utils.EndlessRecyclerViewScrollListener
+import com.mes.cornettask.database.Word
+import com.mes.cornettask.database.WordDatabase
+import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_search.*
 
+
 class NormalSearchFragment : Fragment() {
 
+    private var wordsList: ArrayList<Word> = ArrayList()
     private lateinit var linearLayoutManager: LinearLayoutManager
     private val moviesList: ArrayList<MovieModel> = ArrayList()
     private lateinit var apiService: MovieInterface
@@ -33,13 +38,16 @@ class NormalSearchFragment : Fragment() {
     private lateinit var moviesAdapter: SearchMoverAdapter
     private val compositeDisposable = CompositeDisposable()
     lateinit var scroller: EndlessRecyclerViewScrollListener
+    private lateinit var wordDatabase: WordDatabase
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_search, container, false)
+        val view = inflater.inflate(R.layout.fragment_search, container, false)
+        wordsList = ((wordDatabase.wordDao?.getSearchWords() as ArrayList<Word>?)!!)
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -49,23 +57,36 @@ class NormalSearchFragment : Fragment() {
 
     private fun initViews() {
         apiService = ApiClient.getClient()
+        wordDatabase = context?.let { WordDatabase.getInstance(it) }!!
         initRecycler()
+        initWordRecycler()
         initSearchEditText()
         searchBtn.setOnClickListener {
-            searchKey = movieNameEt.text.toString()
-            moviesList.clear()
-            moviesAdapter.notifyDataSetChanged()
-            scroller.resetState()
-            if (searchKey.isNotEmpty()) {
-                // page =  1 here to reset it
-                searchMovies(searchKey, 1)
-            } else {
-                Toast.makeText(context, getString(R.string.movie_empty), Toast.LENGTH_LONG).show()
-            }
+            resetSearch()
         }
     }
 
-    private fun searchMovies(searchKey: String, page: Int) {
+    private fun resetSearch() {
+        searchKey = movieNameEt.text.toString()
+        moviesList.clear()
+        moviesAdapter.notifyDataSetChanged()
+        scroller.resetState()
+        if (searchKey.isNotEmpty()) {
+            // page =  1 here to reset it
+            searchMovies(searchKey, 1)
+        } else {
+            Toast.makeText(context, getString(R.string.movie_empty), Toast.LENGTH_LONG).show()
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        wordDatabase.cleanUp()
+    }
+
+    fun searchMovies(searchKey: String, page: Int) {
+        if (wordsRecycler.visibility == View.VISIBLE)
+            wordsRecycler.visibility = View.GONE
         progressBar.visibility = View.VISIBLE
         compositeDisposable.add(
             apiService.getSearchMovieAsync(searchKey, page)
@@ -85,9 +106,10 @@ class NormalSearchFragment : Fragment() {
                                 txtError.text = getString(R.string.no_movies)
                                 txtError.visibility = View.VISIBLE
                                 moviesRv.visibility = View.GONE
+                                return@subscribe
                             }
-
                         }
+                        saveWordMovie(searchKey)
                     },
                     {
                         progressBar.visibility = View.GONE
@@ -100,16 +122,29 @@ class NormalSearchFragment : Fragment() {
         )
     }
 
+    // this method is used to insert successful words
+    private fun saveWordMovie(searchKey: String) {
+        var word = Word(searchKey)
+        Completable.fromRunnable {
+            wordDatabase.wordDao?.insert(word)
+        }
+            .subscribeOn(Schedulers.io())
+            .subscribe({
+                wordsList.add(word)
+                wordsAdapter.notifyDataSetChanged()
+            }).dispose()
+    }
+
     private fun initSearchEditText() {
         movieNameEt.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 /**
                  * show list of save words in case of size is> 0
                  * */
-//                if (wordsAdapter.itemCount > 0)
-//                    wordsRecycler.visibility = View.VISIBLE
-//                else
-//                    wordsRecycler.visibility = View.GONE
+                if (wordsAdapter.itemCount > 0)
+                    wordsRecycler.visibility = View.VISIBLE
+                else
+                    wordsRecycler.visibility = View.GONE
             }
         }
 
@@ -118,22 +153,18 @@ class NormalSearchFragment : Fragment() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 // check if the text is empty to show history list
-//                if (s?.isEmpty()!!) {
-//                    if (wordsAdapter.itemCount > 0)
-//                        wordsRecycler.visibility =
-//                            View.VISIBLE // show if there is already items in room db
-//                    else
-//                        wordsRecycler.visibility = View.GONE
-//                } else
-//                    wordsRecycler.visibility = View.GONE  // hide if the length is > 0
+                if (s?.isEmpty()!!) {
+                    if (wordsAdapter.itemCount > 0)
+                        wordsRecycler.visibility =
+                            View.VISIBLE // show if there is already items in room db
+                    else
+                        wordsRecycler.visibility = View.GONE
+                } else
+                    wordsRecycler.visibility = View.GONE  // hide if the length is > 0
             }
 
             override fun afterTextChanged(s: Editable?) {}
         })
-    }
-
-    private fun initSearchScreen() {
-        initRecycler()
     }
 
     private fun initRecycler() {
@@ -152,7 +183,8 @@ class NormalSearchFragment : Fragment() {
     }
 
     private fun initWordRecycler() {
-        wordsAdapter = context?.let { WordListAdapter(it) }!!
+        wordsAdapter = context?.let { WordListAdapter(it, this) }!!
+        wordsAdapter.setWords(wordsList)
         wordsRecycler.adapter = wordsAdapter
         wordsRecycler.layoutManager = LinearLayoutManager(context)
     }

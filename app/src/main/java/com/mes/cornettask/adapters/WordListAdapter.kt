@@ -7,10 +7,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.mes.cornettask.R
 import com.mes.cornettask.database.Word
+import com.mes.cornettask.ui.normalsearch.NormalSearchFragment
 import kotlinx.android.synthetic.main.word_item.view.*
 
 class WordListAdapter internal constructor(
-    context: Context
+    private val context: Context,
+    private val fragment: NormalSearchFragment
 ) : RecyclerView.Adapter<WordListAdapter.WordViewHolder>() {
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
@@ -26,6 +28,7 @@ class WordListAdapter internal constructor(
     override fun onBindViewHolder(holder: WordViewHolder, position: Int) {
         val current = words[position]
         holder.itemView.textView.text = current.word
+        holder.itemView.setOnClickListener { fragment.searchMovies(current.word, 1) }
     }
 
     internal fun setWords(words: List<Word>) {

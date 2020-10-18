@@ -6,26 +6,26 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 @Database(entities = [Word::class], version = 1)
-abstract class NoteDatabase : RoomDatabase() {
-    abstract val noteDao: WordDao?
+abstract class WordDatabase : RoomDatabase() {
+    abstract val wordDao: WordDao?
 
     fun cleanUp() {
-        noteDB = null
+        wordDB = null
     }
 
     companion object {
-        private var noteDB: NoteDatabase? = null
-        fun getInstance(context: Context): NoteDatabase? {
-            if (null == noteDB) {
-                noteDB = buildDatabaseInstance(context)
+        private var wordDB: WordDatabase? = null
+        fun getInstance(context: Context): WordDatabase? {
+            if (null == wordDB) {
+                wordDB = buildDatabaseInstance(context)
             }
-            return noteDB
+            return wordDB
         }
 
-        private fun buildDatabaseInstance(context: Context): NoteDatabase {
+        private fun buildDatabaseInstance(context: Context): WordDatabase {
             return Room.databaseBuilder(
                 context,
-                NoteDatabase::class.java,
+                WordDatabase::class.java,
                 "word_database"
             )
                 .allowMainThreadQueries().build()
