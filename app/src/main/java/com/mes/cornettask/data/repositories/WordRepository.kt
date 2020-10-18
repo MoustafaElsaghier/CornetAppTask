@@ -10,9 +10,9 @@ class WordRepository(private val wordDao: WordDao) {
 
     // Room executes all queries on a separate thread.
     // Observed LiveData will notify the observer when the data has changed.
-    val allWords: LiveData<List<Word>> = wordDao.getSearchWords()
+    val allWords: LiveData<List<Word>> = wordDao.getViewModelSearchWords()
 
-    suspend fun insert(word: Word) {
+    fun insert(word: Word) {
         wordDao.insert(word)
     }
 }

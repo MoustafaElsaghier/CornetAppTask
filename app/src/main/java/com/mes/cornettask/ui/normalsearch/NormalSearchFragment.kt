@@ -17,15 +17,21 @@ import com.mes.cornettask.adapters.WordListAdapter
 import com.mes.cornettask.data.api.ApiClient
 import com.mes.cornettask.data.api.MovieInterface
 import com.mes.cornettask.data.pojos.MovieModel
+import com.mes.cornettask.data.pojos.MoviesResponse
 import com.mes.cornettask.data.utils.EndlessRecyclerViewScrollListener
+import com.mes.cornettask.data.utils.Utils
 import com.mes.cornettask.database.Word
 import com.mes.cornettask.database.WordDatabase
-import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_search.*
 
+
+/**
+ * this fragment is build using mvc because if time & failing in handle search
+ * by mvvm & pagination of jetpack, I've tried too much but i didn't get it working
+ * */
 
 class NormalSearchFragment : Fragment() {
 
@@ -34,7 +40,7 @@ class NormalSearchFragment : Fragment() {
     private val moviesList: ArrayList<MovieModel> = ArrayList()
     private lateinit var apiService: MovieInterface
     private lateinit var wordsAdapter: WordListAdapter
-    private var searchKey: String = ""
+    var searchKey: String = ""
     private lateinit var moviesAdapter: SearchMoverAdapter
     private val compositeDisposable = CompositeDisposable()
     lateinit var scroller: EndlessRecyclerViewScrollListener
@@ -45,9 +51,7 @@ class NormalSearchFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_search, container, false)
-        wordsList = ((wordDatabase.wordDao?.getSearchWords() as ArrayList<Word>?)!!)
-        return view
+        return inflater.inflate(R.layout.fragment_search, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -58,20 +62,23 @@ class NormalSearchFragment : Fragment() {
     private fun initViews() {
         apiService = ApiClient.getClient()
         wordDatabase = context?.let { WordDatabase.getInstance(it) }!!
+        wordsList = ((wordDatabase.wordDao?.getSearchWords() as ArrayList<Word>?)!!)
         initRecycler()
         initWordRecycler()
         initSearchEditText()
         searchBtn.setOnClickListener {
-            resetSearch()
+            moviesSearch()
         }
     }
 
-    private fun resetSearch() {
+    private fun moviesSearch() {
         searchKey = movieNameEt.text.toString()
-        moviesList.clear()
-        moviesAdapter.notifyDataSetChanged()
-        scroller.resetState()
+        activity?.currentFocus?.let { context?.let { it1 -> Utils.hideSoftKeyBoard(it1, it) } }
+
         if (searchKey.isNotEmpty()) {
+            moviesList.clear()
+            moviesAdapter.notifyDataSetChanged()
+            scroller.resetState()
             // page =  1 here to reset it
             searchMovies(searchKey, 1)
         } else {
@@ -82,6 +89,8 @@ class NormalSearchFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         wordDatabase.cleanUp()
+        compositeDisposable.dispose()
+
     }
 
     fun searchMovies(searchKey: String, page: Int) {
@@ -94,22 +103,7 @@ class NormalSearchFragment : Fragment() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                     {
-                        progressBar.visibility = View.GONE
-                        if (it.results.isNotEmpty()) {
-                            moviesList.addAll(it.results)
-                            moviesAdapter.notifyItemRangeInserted(
-                                moviesAdapter.itemCount,
-                                it.results.size
-                            )
-                        } else {
-                            if (moviesAdapter.itemCount == 0) {
-                                txtError.text = getString(R.string.no_movies)
-                                txtError.visibility = View.VISIBLE
-                                moviesRv.visibility = View.GONE
-                                return@subscribe
-                            }
-                        }
-                        saveWordMovie(searchKey)
+                        appendMoviesList(it)
                     },
                     {
                         progressBar.visibility = View.GONE
@@ -122,17 +116,33 @@ class NormalSearchFragment : Fragment() {
         )
     }
 
+    private fun appendMoviesList(it: MoviesResponse) {
+        progressBar.visibility = View.GONE
+        if (it.results.isNotEmpty()) {
+            moviesList.addAll(it.results)
+            moviesAdapter.notifyItemRangeInserted(
+                moviesAdapter.itemCount,
+                it.results.size
+            )
+        } else {
+            if (moviesAdapter.itemCount == 0) {
+                txtError.text = getString(R.string.no_movies)
+                txtError.visibility = View.VISIBLE
+                moviesRv.visibility = View.GONE
+                return
+            }
+        }
+        // at the end so making sur that it's added
+        saveWordMovie(searchKey)
+    }
+
     // this method is used to insert successful words
     private fun saveWordMovie(searchKey: String) {
-        var word = Word(searchKey)
-        Completable.fromRunnable {
-            wordDatabase.wordDao?.insert(word)
-        }
-            .subscribeOn(Schedulers.io())
-            .subscribe({
-                wordsList.add(word)
-                wordsAdapter.notifyDataSetChanged()
-            }).dispose()
+        val word = Word(searchKey)
+        wordDatabase.wordDao?.insert(word)
+
+        wordsList.add(word)
+        wordsAdapter.notifyDataSetChanged()
     }
 
     private fun initSearchEditText() {
@@ -188,4 +198,5 @@ class NormalSearchFragment : Fragment() {
         wordsRecycler.adapter = wordsAdapter
         wordsRecycler.layoutManager = LinearLayoutManager(context)
     }
+
 }

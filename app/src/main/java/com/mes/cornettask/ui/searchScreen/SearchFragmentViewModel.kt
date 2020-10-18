@@ -8,7 +8,10 @@ import com.mes.cornettask.data.pojos.MovieModel
 import com.mes.cornettask.data.repositories.NetworkState
 import io.reactivex.disposables.CompositeDisposable
 
-
+/**
+ * ths was my try to make it using mvvm, pagination, to save your time, ignore this package
+ * if not interested to check my try
+ * */
 class SearchFragmentViewModel(
     private val moviesRepository: MoviesPageListRepository
 ) : ViewModel() {
@@ -16,12 +19,12 @@ class SearchFragmentViewModel(
         set(value) {
             field = value
             searchText.postValue(value.value)
-//            moviesPagedList =
-//                searchText.value?.let {
-//                    moviesRepository.fetchLiveMoviePagedList(compositeDisposable,
-//                        it
-//                    )
-//                }!!
+
+//            moviesPagedList.postValue(
+//                moviesRepository.fetchLiveMoviePagedList(
+//                    compositeDisposable, searchText.value.toString()
+//                )
+//            )
         }
 
 

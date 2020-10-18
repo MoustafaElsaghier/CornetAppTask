@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.mes.cornettask.R
+import com.mes.cornettask.data.utils.Utils.hideSoftKeyBoard
 import com.mes.cornettask.database.Word
 import com.mes.cornettask.ui.normalsearch.NormalSearchFragment
 import kotlinx.android.synthetic.main.word_item.view.*
@@ -28,7 +29,11 @@ class WordListAdapter internal constructor(
     override fun onBindViewHolder(holder: WordViewHolder, position: Int) {
         val current = words[position]
         holder.itemView.textView.text = current.word
-        holder.itemView.setOnClickListener { fragment.searchMovies(current.word, 1) }
+        holder.itemView.setOnClickListener {
+            fragment.searchMovies(current.word, 1)
+            fragment.searchKey = current.word
+            hideSoftKeyBoard(context, it)
+        }
     }
 
     internal fun setWords(words: List<Word>) {

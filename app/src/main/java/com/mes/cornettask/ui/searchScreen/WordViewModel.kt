@@ -9,7 +9,10 @@ import com.mes.cornettask.database.Word
 import com.mes.cornettask.database.WordRoomDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-
+/**
+ * ths was my try to make it using mvvm, pagination, to save your time, ignore this package
+ * if not interested to check my try
+ * */
 class WordViewModel(application: Application) : AndroidViewModel(application) {
     val wordsDao = WordRoomDatabase.getDatabase(application, viewModelScope).wordDao()
 

@@ -11,7 +11,10 @@ import com.mes.cornettask.data.repositories.MoviesDataSource
 import com.mes.cornettask.data.repositories.MoviesDataSourceFactory
 import com.mes.cornettask.data.repositories.NetworkState
 import io.reactivex.disposables.CompositeDisposable
-
+/**
+ * ths was my try to make it using mvvm, pagination, to save your time, ignore this package
+ * if not interested to check my try
+ * */
 class MoviesPageListRepository(private val apiService: MovieInterface) {
 
     lateinit var moviesPagedList: LiveData<PagedList<MovieModel>>

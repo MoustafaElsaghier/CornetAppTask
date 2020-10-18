@@ -29,7 +29,6 @@
         android:layout_marginStart="18dp"
         android:layout_marginTop="18dp"
         android:layout_marginEnd="6dp"
-        android:layout_marginBottom="16dp"
         android:background="@drawable/gray_rounded_rectangle"
         android:gravity="center_vertical"
         android:hint="@string/movie_name"
@@ -39,7 +38,6 @@
         android:paddingStart="30dp"
         android:paddingEnd="5dp"
         app:drawableEndCompat="@drawable/ic_search"
-        app:layout_constraintBottom_toTopOf="@+id/moviesRv"
         app:layout_constraintEnd_toStartOf="@+id/searchBtn"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

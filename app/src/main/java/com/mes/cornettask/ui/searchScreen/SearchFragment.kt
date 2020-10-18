@@ -20,7 +20,10 @@ import com.mes.cornettask.data.repositories.NetworkState
 import kotlinx.android.synthetic.main.fragment_discover.progressBar
 import kotlinx.android.synthetic.main.fragment_discover.txtError
 import kotlinx.android.synthetic.main.fragment_search.*
-
+/**
+ * ths was my try to make it using mvvm, pagination, to save your time, ignore this package
+ * if not interested to check my try
+ * */
 class SearchFragment : Fragment() {
 
     private lateinit var viewModel: SearchFragmentViewModel
@@ -72,7 +75,7 @@ class SearchFragment : Fragment() {
         })
 
         initViews()
-//        initSearchScreen()
+        initSearchScreen()
     }
 
     private fun initViews() {
