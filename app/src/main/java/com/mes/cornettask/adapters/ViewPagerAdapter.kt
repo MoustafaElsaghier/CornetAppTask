@@ -19,7 +19,6 @@ class ViewPagerAdapter(supportFragmentManager: FragmentManager) :
             1 -> {
                 searchFragment
             }
-
             else -> getItem(position)
         }
     }

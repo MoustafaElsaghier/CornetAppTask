@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import com.mes.cornettask.R
 import com.mes.cornettask.adapters.DiscoverMoverAdapter
 import com.mes.cornettask.data.api.ApiClient
@@ -32,7 +32,7 @@ class DiscoverFragment : Fragment() {
         if (it != null) {
             moviesAdapter = context?.let { it1 -> DiscoverMoverAdapter(it1, it.results) }!!
             discoverMoviesRv.layoutManager =
-                LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                GridLayoutManager(context, 2)
             discoverMoviesRv.adapter = moviesAdapter
         }
     }

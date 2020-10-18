@@ -1,24 +1,42 @@
 package com.mes.cornettask.ui.searchScreen
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.paging.PagedList
 import com.mes.cornettask.data.pojos.MovieModel
 import com.mes.cornettask.data.repositories.NetworkState
 import io.reactivex.disposables.CompositeDisposable
 
-class SearchFragmentViewModel(
-    val moviesRepository: MoviesPageListRepository
-) : ViewModel() {
 
-    var searchText: String = ""
+class SearchFragmentViewModel(
+    private val moviesRepository: MoviesPageListRepository
+) : ViewModel() {
+    var searchText = MutableLiveData<String>()
         set(value) {
             field = value
-            moviesRepository.fetchLiveMoviePagedList(compositeDisposable, searchText)
+            searchText.postValue(value.value)
+//            moviesPagedList =
+//                searchText.value?.let {
+//                    moviesRepository.fetchLiveMoviePagedList(compositeDisposable,
+//                        it
+//                    )
+//                }!!
         }
-    val compositeDisposable = CompositeDisposable()
+
+
+    private val compositeDisposable = CompositeDisposable()
+
     val moviesPagedList: LiveData<PagedList<MovieModel>> by lazy {
-        moviesRepository.fetchLiveMoviePagedList(compositeDisposable, searchText)
+        moviesRepository.fetchLiveMoviePagedList(
+            compositeDisposable, searchText.value.toString()
+        )
+    }
+
+    val moviesPagedList2: LiveData<PagedList<MovieModel>> by lazy {
+        moviesRepository.fetchLiveMoviePagedList(
+            compositeDisposable, searchText.value.toString()
+        )
     }
 
     val networkState: LiveData<NetworkState> by lazy {

@@ -14,7 +14,7 @@ const val token =
 
 const val POSTER_BASE_URL = "https://image.tmdb.org/t/p/w342"
 const val FIRST_PAGE = 1
-const val ITEMS_PER_PAGE = 15
+const val ITEMS_PER_PAGE = 20
 
 object ApiClient {
     fun getClient(): MovieInterface {

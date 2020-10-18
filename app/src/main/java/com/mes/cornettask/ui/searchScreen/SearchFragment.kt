@@ -1,5 +1,6 @@
 package com.mes.cornettask.ui.searchScreen
 
+import android.app.Application
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -13,8 +14,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mes.cornettask.R
 import com.mes.cornettask.adapters.PopularMoviePagedListAdapter
-import com.mes.cornettask.adapters.WordListAdapter
 import com.mes.cornettask.data.api.ApiClient
+import com.mes.cornettask.data.api.MovieInterface
 import com.mes.cornettask.data.repositories.NetworkState
 import kotlinx.android.synthetic.main.fragment_discover.progressBar
 import kotlinx.android.synthetic.main.fragment_discover.txtError
@@ -23,11 +24,14 @@ import kotlinx.android.synthetic.main.fragment_search.*
 class SearchFragment : Fragment() {
 
     private lateinit var viewModel: SearchFragmentViewModel
-    private lateinit var moviesListRepository: MoviesPageListRepository
+    lateinit var movieRepository: MoviesPageListRepository
+
+//    private lateinit var moviesListRepository: MoviesPageListRepository
+
     private var searchKey: String = ""
     private lateinit var moviesAdapter: PopularMoviePagedListAdapter
-    private lateinit var wordsAdapter: WordListAdapter
-    private lateinit var wordViewModel: WordViewModel
+//    private lateinit var wordsAdapter: WordListAdapter
+//    private lateinit var wordViewModel: WordViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,26 +43,65 @@ class SearchFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initSearchScreen()
+        val apiService: MovieInterface = ApiClient.getClient()
+
+        movieRepository = MoviesPageListRepository(apiService)
+
+        viewModel = getViewModel()
+        viewModel.searchText.postValue("a")
+        val movieAdapter = context?.let { PopularMoviePagedListAdapter(it) }
+
+        val linearLayoutManager = LinearLayoutManager(context)
+        moviesRv.layoutManager = linearLayoutManager
+        moviesRv.setHasFixedSize(true)
+        moviesRv.adapter = movieAdapter
+
+        viewModel.moviesPagedList.observe(viewLifecycleOwner, {
+            movieAdapter?.submitList(it)
+        })
+
+        viewModel.networkState.observe(viewLifecycleOwner, {
+            progressBar.visibility =
+                if (viewModel.listIsEmpty() && it == NetworkState.LOADING) View.VISIBLE else View.GONE
+            txtError.visibility =
+                if (viewModel.listIsEmpty() && it == NetworkState.ERROR) View.VISIBLE else View.GONE
+
+            if (!viewModel.listIsEmpty()) {
+                movieAdapter?.setNetworkState(it)
+            }
+        })
+
         initViews()
+//        initSearchScreen()
     }
 
     private fun initViews() {
-        wordViewModel = ViewModelProvider(this).get(WordViewModel::class.java)
-        wordViewModel.allWords.observe(viewLifecycleOwner, { words ->
-            // Update the cached copy of the words in the adapter.
-            words?.let { wordsAdapter.setWords(it) }
-        })
+//        wordViewModel = initWordsViewModel()
+
+//        wordViewModel.allWords.observe(viewLifecycleOwner, { words ->
+//        Update the cached copy of the words in the adapter .
+//            words?.let { wordsAdapter.setWords(it) }
+//        })
+        moviesAdapter = context?.let { PopularMoviePagedListAdapter(it) }!!
 
         initSearchEditText()
         searchBtn.setOnClickListener {
             searchKey = movieNameEt.text.toString()
             if (searchKey.isNotEmpty()) {
-                viewModel.searchText = searchKey
+                viewModel.searchText.postValue(searchKey)
             } else {
                 Toast.makeText(context, getString(R.string.movie_empty), Toast.LENGTH_LONG).show()
             }
         }
+    }
+
+    private fun initWordsViewModel(): WordViewModel {
+        return ViewModelProvider(this, object : ViewModelProvider.Factory {
+            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+                @Suppress("UNCHECKED_CAST")
+                return WordViewModel(Application()) as T
+            }
+        }).get(WordViewModel::class.java)
     }
 
     private fun initSearchEditText() {
@@ -67,10 +110,10 @@ class SearchFragment : Fragment() {
                 /**
                  * show list of save words in case of size is> 0
                  * */
-                if (wordsAdapter.itemCount > 0)
-                    wordsRecycler.visibility = View.VISIBLE
-                else
-                    wordsRecycler.visibility = View.GONE
+//                if (wordsAdapter.itemCount > 0)
+//                    wordsRecycler.visibility = View.VISIBLE
+//                else
+//                    wordsRecycler.visibility = View.GONE
             }
         }
 
@@ -79,14 +122,14 @@ class SearchFragment : Fragment() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 // check if the text is empty to show history list
-                if (s?.isEmpty()!!) {
-                    if (wordsAdapter.itemCount > 0)
-                        wordsRecycler.visibility =
-                            View.VISIBLE // show if there is already items in room db
-                    else
-                        wordsRecycler.visibility = View.GONE
-                } else
-                    wordsRecycler.visibility = View.GONE  // hide if the length is > 0
+//                if (s?.isEmpty()!!) {
+//                    if (wordsAdapter.itemCount > 0)
+//                        wordsRecycler.visibility =
+//                            View.VISIBLE // show if there is already items in room db
+//                    else
+//                        wordsRecycler.visibility = View.GONE
+//                } else
+//                    wordsRecycler.visibility = View.GONE  // hide if the length is > 0
             }
 
             override fun afterTextChanged(s: Editable?) {}
@@ -94,13 +137,13 @@ class SearchFragment : Fragment() {
     }
 
     private fun initSearchScreen() {
-        initViewModel()
         initRecycler()
+        initViewModel()
     }
 
     private fun initViewModel() {
         val apiService = ApiClient.getClient()
-        moviesListRepository = MoviesPageListRepository(apiService)
+        movieRepository = MoviesPageListRepository(apiService)
         viewModel = getViewModel()
         initObservers()
     }
@@ -124,6 +167,7 @@ class SearchFragment : Fragment() {
     }
 
     private fun initMoviesObserve() {
+        viewModel.searchText.postValue("")
         viewModel.moviesPagedList.observe(viewLifecycleOwner, {
             moviesAdapter.submitList(it)
         })
@@ -141,14 +185,14 @@ class SearchFragment : Fragment() {
         return ViewModelProvider(this, object : ViewModelProvider.Factory {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
                 @Suppress("UNCHECKED_CAST")
-                return SearchFragmentViewModel(moviesListRepository) as T
+                return SearchFragmentViewModel(movieRepository) as T
             }
         }).get(SearchFragmentViewModel::class.java)
     }
 
-    private fun initWordRecycler() {
-        wordsAdapter = context?.let { WordListAdapter(it) }!!
-        wordsRecycler.adapter = wordsAdapter
-        wordsRecycler.layoutManager = LinearLayoutManager(context)
-    }
+//    private fun initWordRecycler() {
+//        wordsAdapter = context?.let { WordListAdapter(it) }!!
+//        wordsRecycler.adapter = wordsAdapter
+//        wordsRecycler.layoutManager = LinearLayoutManager(context)
+//    }
 }

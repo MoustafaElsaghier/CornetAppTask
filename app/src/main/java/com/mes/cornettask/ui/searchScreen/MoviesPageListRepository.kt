@@ -13,6 +13,7 @@ import com.mes.cornettask.data.repositories.NetworkState
 import io.reactivex.disposables.CompositeDisposable
 
 class MoviesPageListRepository(private val apiService: MovieInterface) {
+
     lateinit var moviesPagedList: LiveData<PagedList<MovieModel>>
     lateinit var moviesDataSourceFactory: MoviesDataSourceFactory
 

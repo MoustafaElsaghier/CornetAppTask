@@ -56,7 +56,5 @@ class MoviesDataSource(
         )
     }
 
-    override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, MovieModel>) {
-
-    }
+    override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, MovieModel>) {}
 }
