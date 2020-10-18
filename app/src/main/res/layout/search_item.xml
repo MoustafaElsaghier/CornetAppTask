@@ -19,7 +19,7 @@
             android:layout_height="230dp"
             android:adjustViewBounds="true"
             android:scaleType="fitXY"
-            android:src="@drawable/dummy_image"
+            android:src="@drawable/placeholder"
             app:riv_border_color="@android:color/white"
             app:riv_corner_radius="30dp" />
 

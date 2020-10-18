@@ -1,6 +1,7 @@
 package com.mes.cornettask.adapters
 
 import android.content.Context
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,9 +32,8 @@ class SearchMoverAdapter(private val context: Context, private val items: List<M
             itemView.movieName.text = item.title
             itemView.movieReleaseDate.text = item.releaseDate
             itemView.movieOverview.text = item.overview
-
-            loadImage(context, itemView.movieImage, item.posterPath)
-
+            if (!TextUtils.isEmpty(item.posterPath))
+                loadImage(context, itemView.movieImage, item.posterPath)
         }
     }
 

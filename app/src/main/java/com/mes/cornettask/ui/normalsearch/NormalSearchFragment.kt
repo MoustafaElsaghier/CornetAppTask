@@ -18,6 +18,7 @@ import com.mes.cornettask.data.api.ApiClient
 import com.mes.cornettask.data.api.MovieInterface
 import com.mes.cornettask.data.pojos.MovieModel
 import com.mes.cornettask.data.utils.EndlessRecyclerViewScrollListener
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_search.*
@@ -44,7 +45,6 @@ class NormalSearchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViews()
-
     }
 
     private fun initViews() {
@@ -53,6 +53,9 @@ class NormalSearchFragment : Fragment() {
         initSearchEditText()
         searchBtn.setOnClickListener {
             searchKey = movieNameEt.text.toString()
+            moviesList.clear()
+            moviesAdapter.notifyDataSetChanged()
+            scroller.resetState()
             if (searchKey.isNotEmpty()) {
                 // page =  1 here to reset it
                 searchMovies(searchKey, 1)
@@ -63,20 +66,34 @@ class NormalSearchFragment : Fragment() {
     }
 
     private fun searchMovies(searchKey: String, page: Int) {
+        progressBar.visibility = View.VISIBLE
         compositeDisposable.add(
             apiService.getSearchMovieAsync(searchKey, page)
                 .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                     {
+                        progressBar.visibility = View.GONE
                         if (it.results.isNotEmpty()) {
                             moviesList.addAll(it.results)
                             moviesAdapter.notifyItemRangeInserted(
                                 moviesAdapter.itemCount,
                                 it.results.size
                             )
+                        } else {
+                            if (moviesAdapter.itemCount == 0) {
+                                txtError.text = getString(R.string.no_movies)
+                                txtError.visibility = View.VISIBLE
+                                moviesRv.visibility = View.GONE
+                            }
+
                         }
                     },
                     {
+                        progressBar.visibility = View.GONE
+                        txtError.text = getString(R.string.common_error)
+                        txtError.visibility = View.VISIBLE
+                        moviesRv.visibility = View.GONE
                         it.message?.let { it1 -> Log.e("MovieDetailsDataSource", it1) }
                     }
                 )
@@ -131,6 +148,7 @@ class NormalSearchFragment : Fragment() {
                 if (page > 1) searchMovies(searchKey, page)
             }
         }
+        moviesRv.addOnScrollListener(scroller)
     }
 
     private fun initWordRecycler() {

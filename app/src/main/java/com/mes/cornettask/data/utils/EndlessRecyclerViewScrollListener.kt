@@ -11,7 +11,7 @@ abstract class EndlessRecyclerViewScrollListener(layoutManager: LinearLayoutMana
 
     // The minimum amount of items to have below your current scroll position
     // before loading more.
-    private val visibleThreshold = 2
+    private val visibleThreshold = 5
 
     // The current offset index of data you have loaded
     private var currentPage = 1

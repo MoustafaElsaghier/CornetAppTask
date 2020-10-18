@@ -20,7 +20,7 @@
             android:layout_height="300dp"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
-            android:src="@drawable/dummy_image"
+            android:src="@drawable/placeholder"
             app:riv_border_color="@android:color/white"
             app:riv_corner_radius="20dp" />
 

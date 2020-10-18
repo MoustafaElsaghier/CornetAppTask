@@ -6,4 +6,6 @@
     <string name="discover">Discover</string>
     <string name="movie_name">Movie Name</string>
     <string name="movie_empty">Please enter movie name</string>
+    <string name="no_movies">There is no result for this search</string>
+    <string name="common_error">Something Went Wrong.</string>
 </resources>

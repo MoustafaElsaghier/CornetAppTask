@@ -41,7 +41,7 @@ object ImageHelper {
                     target: Target<Drawable>?,
                     isFirstResource: Boolean
                 ): Boolean {
-                    movieImage.setImageResource(R.drawable.dummy_image)
+                    movieImage.setImageResource(R.drawable.placeholder)
                     return false
                 }
             })

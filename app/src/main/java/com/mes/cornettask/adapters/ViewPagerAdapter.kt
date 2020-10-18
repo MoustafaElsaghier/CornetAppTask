@@ -4,12 +4,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import com.mes.cornettask.ui.discoverScreen.DiscoverFragment
-import com.mes.cornettask.ui.searchScreen.SearchFragment
+import com.mes.cornettask.ui.normalsearch.NormalSearchFragment
 
 class ViewPagerAdapter(supportFragmentManager: FragmentManager) :
     FragmentStatePagerAdapter(supportFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
     var discoverFragment: DiscoverFragment = DiscoverFragment()
-    var searchFragment: SearchFragment = SearchFragment()
+    private var searchFragment: NormalSearchFragment = NormalSearchFragment()
+//    var searchFragment: SearchFragment = SearchFragment()
 
     override fun getItem(position: Int): Fragment {
         return when (position) {
